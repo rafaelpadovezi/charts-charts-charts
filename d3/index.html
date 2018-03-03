@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Composição partidária das Comissões da Camara Federal - Junho/2017</title>
+    <style>
+        body {
+            font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif
+        }
+
+        g.parent>rect {
+            stroke: white;
+            fill: #80433E;
+        }
+
+        h1 {
+            font-family: "Trebuchet MS","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Tahoma,sans-serif;
+        }
+
+        text.comission {
+            font-family: "Trebuchet MS","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Tahoma,sans-serif;
+            fill: white;
+            font-size: 16px;
+        }
+
+        text {
+            font-family: "Trebuchet MS","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Tahoma,sans-serif;
+        }
+
+        text.party {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+    <h1>Composição partidária das Comissões da Camara Federal - Junho/2017</h1>
+    <a href="http://www2.camara.leg.br/atividade-legislativa/comissoes/comissoes-permanentes">http://www2.camara.leg.br/atividade-legislativa/comissoes/comissoes-permanentes</a>
+    </p>
+    <svg width="1200" height="600"></svg>
+</div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script>
+        const comissaoDict = {
+            'CCTCI': 'Ciência e Tecn.',
+            'CCJC': 'Constituição e Justiça',
+            'CDHM': 'Direitos Hum.',
+            'CDEICS': 'Des. Econômico',
+            'CE': 'Educação',
+            'CFT': 'Finanças e Trib.',
+            'CFFC': 'Fiscalização',
+            'CAPADR': 'Agropecuária',
+            'CSSF': 'Seguridade Social',
+            'CTASP': 'Trabalho',
+            'CMADS': 'Meio Ambiente'
+        };
+
+        var svg = d3.select('svg'),
+            width = +svg.attr('width'),
+            height = +svg.attr('height');
+
+        var headerWidth = 20,
+            legendWidth = 100;
+
+        var color = d3.scaleOrdinal(d3.schemeCategory20),
+            format = d3.format('d');
+
+        var treemap = d3.treemap()
+            .tile(d3.treemapSquarify)
+            .size([width - legendWidth, height])
+            .round(true)
+            .paddingInner(1)
+            .paddingLeft(1)
+            .paddingRight(1);
+
+        d3.json('visComissions.json', (err, data) => {
+
+            data = data.filter(d =>
+                ['CCTCI', 'CCJC', 'CDHM', 'CDEICS', 'CE', 'CFT', 'CFFC', 'CAPADR', 'CSSF', 'CTASP', 'CMADS']
+                    .indexOf(d.name) !== -1);
+            console.log(data)
+            if (err) throw err;
+
+            var root = d3.hierarchy({ name: 'Comissions', children: data })
+                .eachBefore(d => d.data.id = d.data.name)
+                .sum(d => d.count)
+                .sort((a, b) => b.height - a.height || b.value - a.value);
+            var listOfParties = [...new Set(root.leaves().map(d => d.data.name))].sort((a, b) => a - b)
+            treemap(root);
+
+            var parentCells = svg.append('g').selectAll('g')
+                .data(root.children)
+                .enter().append('g')
+                .attr('transform', d => `translate(${d.x0}, ${d.y0})`)
+                .attr('class', 'parent');
+
+            parentCells.append('rect')
+                .attr('id', d => d.data.id)
+                .attr('width', d => d.x1 - d.x0)
+                .attr('height', headerWidth)
+                .attr('rx', 5);
+            parentCells.append("text")
+                .attr("y", headerWidth - 5)
+                .text(d => comissaoDict[d.data.name])
+                .attr('fill', 'white')
+                .attr('x', function() {
+                    return d3.select(this.parentNode).selectAll('rect').node().getBBox().width / 2
+                    - this.getComputedTextLength() / 2;
+                });
+            var cells = parentCells.append('g')
+                .attr('transform', d => `translate(0, ${headerWidth})`)
+                .selectAll('g')
+                .data(d => treemap
+                    .size([d.x1 - d.x0, d.y1 - d.y0 - headerWidth])
+                    (d3.hierarchy(d.data)
+                        .sum(d => d.count)
+                        .sort((a, b) => b.height - a.height || b.value - a.value))
+                    .leaves())
+                .enter().append('g')
+                .attr('transform', d => `translate(${d.x0}, ${d.y0})`);
+
+            cells.append('rect')
+                .attr('id', d => d.data.id)
+                .attr('width', d => d.x1 - d.x0)
+                .attr('height', d => d.y1 - d.y0)
+                .attr('fill', d => colorPicker(d.data.name))
+                .attr('class', 'party')
+                .attr('rx', 5);
+
+            cells.append('text')
+                .each(fontSize)
+                .attr('x', function() {
+                    return d3.select(this.parentNode).selectAll('rect').node().getBBox().width / 2
+                    - this.getComputedTextLength() / 2;
+                });;
+
+            function fontSize(d, i) {
+                d.dx = Math.abs(d.x0 - d.x1)
+                d.dy = Math.abs(d.y0 - d.y1)
+                var size = d.dx / 3;
+                var words = d.data.name.split(' ');
+                var word = words[0];
+                var width = d.dx;
+                var height = d.dy;
+                var length = 0;
+                d3.select(this).style("font-size", size + "px").text(word);
+                d3.select(this).attr('y', size)
+                while (((this.getBBox().width >= width) || (this.getBBox().height >= height)) && (size > 12)) {
+                    size--;
+                    d3.select(this).style("font-size", size + "px");
+                    d3.select(this).attr('y', size)
+                    this.firstChild.data = word;
+                }
+            }
+
+            cells.append("title")
+                .text(d => d.data.id + "\n" + format(d.data.count));
+
+        });
+        // https://color.adobe.com/pt/create/color-wheel/?base=2&rule=Analogous&selected=4&name=Meu%20tema%20do%20Color&mode=rgb&rgbvalues=0.4766605148884073,0.485757953230855,1,0.8063674563153554,0.11068828200421055,1,1,0.3392044918132895,0.3258320424268146,1,0.5956708704351292,0.26783227742983473,1,0.864906757732716,0.3704136506253335&swatchOrder=0,1,2,3,4
+        function colorPicker(party) {
+            var centrao = ['PMDB', 'PP', 'SD', 'PSD', 'PRB', 'PSC', 'PR', 'PTB'];
+            if (centrao.indexOf(party) !== -1)
+                return '#FF9844';
+            var neoliberal = ['PSDB', 'DEM', 'PPS', 'PSB', 'PV']
+            if (neoliberal.indexOf(party) !== -1)
+                return '#7A7CFF';
+            var trabalhista = ['PCdoB', 'PT', 'PDT'];
+            if (trabalhista.indexOf(party) !== -1)
+                return '#FF5653';
+            var esquerda = ['PSOL', 'REDE']
+            if (esquerda.indexOf(party) !== -1)
+                return '#FFDD5E';
+            return '#CE1CFF';
+        }
+    </script>
+</body>
+
+</html>
