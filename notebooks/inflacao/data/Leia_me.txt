@@ -1,0 +1,36 @@
+IPCA
+
+Apresenta tabelas de pesos e variações, por grupo, subgrupo  itens e subitens do Índice Nacional 
+de Preços ao Consumidor Amplo - IPCA, com base nas informações levantadas junto a 
+estabelecimentos comerciais e de prestação de serviços, concessionárias de serviços públicos e 
+domicílios(para levantamento de aluguel e condomínio), que constituem a unidade de coleta do 
+Sistema Nacional de Índices de Preços ao Consumidor - SNIPC.
+Inclui, ainda, as séries históricas do IPCA e do IPCA dessazonalizado, os fatores sazonais, assim 
+como o Índice Nacional  de Preços ao Consumidor Amplo-15 - IPCA-15, que o IBGE passou a 
+divulgar a partir de maio de 2000,  diversas informações sobre a atualização das  estruturas de 
+ponderação do INPC e IPCA   e nota explicativa sobre reajuste de valores utilizando o IPCA. 
+A população objetivo do IPCA e do IPCA-15 é formada pelas famílias com rendimentos mensais 
+compreendidos entre 1(um) e 40 (quarenta) salários-mínimos e  residentes  nas áreas urbanas 
+das regiões metropolitanas. O período de coleta do IPCA estende-se, em geral, do dia 01 ao dia 
+30  do mês de referência e  do  IPCA-15, do  dia 16 do mês anterior ao dia 15 do mês de 
+referência . A divulgação de  ambos os índices é mensal, conforme cronograma de divulgação. 
+O IPCA  é produzido desde 1980 para medir a inflação da economia. Foi utilizado como 
+indexador oficial do país, corrigindo salários, aluguéis, taxa de câmbio, além de todos os demais 
+ativos monetários, até março de 1986. É utilizado para reajuste dos contratos de locação 
+residencial, substituindo o índice de Salários Nominais Médios - ISN, extinto em agosto de 1992. 
+A partir de julho de 1999 o IPCA passou a ser utilizado pelo Banco Central do Brasil, para 
+acompanhamento dos objetivos estabelecidos no sistema de metas de inflação e balizamento da 
+política monetária.
+Os resultados são divulgados para Brasil e  regiões metropolitanas de Belém, Fortaleza, Recife, 
+Salvador, Belo Horizonte, Rio de Janeiro, São Paulo, Curitiba e Porto Alegre, além de Brasília e 
+município de Goiânia.
+Informações sobre a legislação pertinente ao Índice podem ser consultadas no Quadro SNIPC, 
+no diretório Sistema de Índices de Preços ao Consumidor. 
+É composto pelos seguintes diretórios:
+
+               Atualizacao_das_Estruturas
+			   Atualizacao_das_Valores
+               Fasciculo_Indicadores_IBGE
+               Ipca_15
+               IPCA_Dessazonalizado
+               Series_Historicas 
